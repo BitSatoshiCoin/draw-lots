@@ -96,24 +96,32 @@ export const Integral: React.FC<IntegralProps> = () => {
   const pointsSuccess = () => {
     integralRefetch();
     setIsPoint(true);
-    toast({
+    const { dismiss } = toast({
       title: '签到成功',
       description: (
         <div className="flex items-center">
-          <Coins /> + POINTSADDED
+          <Coins /> + {POINTSADDED}
         </div>
       ),
     });
+    setTimeout(() => {
+      dismiss();
+    }, 3000);
   };
 
   const pointsError = () => {
-    toast({
+    const { dismiss } = toast({
       description: (
-        <div className="flex items-center">
-          <Info /> &nbsp;签到失败
-        </div>
+        <>
+          <div className="flex items-center">
+            <Info /> &nbsp;签到失败
+          </div>
+        </>
       ),
     });
+    setTimeout(() => {
+      dismiss();
+    }, 3000);
   };
 
   if (status !== 'connected') {
