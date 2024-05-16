@@ -5,12 +5,14 @@ import { useToast } from '@/components/ui/use-toast';
 import { Coins, Info } from 'lucide-react';
 import { useWriteContract, useAccount, useReadContract } from 'wagmi';
 import { myTokenAbi } from '@/lib/abi';
-import { TOKEN_ADDRESS, POINTSADDED } from '@/config/const';
-import { isToday } from '@/lib/utils';
+import { TOKEN_ADDRESS, POINTSADDED, DAY_IN_SECONDS } from '@/config/const';
+import { PointsCountDown } from './points-countdown';
+import { wait } from '@/lib/utils';
 
 interface IntegralProps {}
 export const Integral: React.FC<IntegralProps> = () => {
-  const [isPoint, setIsPoint] = useState(false);
+  const [canPoints, setCanPoints] = useState(false); // 是否可以签到
+  const [pointsSecond, setPontsSecond] = useState(0);
   const [intehral, setIntegral] = useState(0);
   const { status, address } = useAccount();
   const { writeContract } = useWriteContract();
@@ -18,11 +20,7 @@ export const Integral: React.FC<IntegralProps> = () => {
   /**
    * 读取积分
    */
-  const {
-    data: integralData,
-    isSuccess: integralIsucecess,
-    refetch: integralRefetch,
-  } = useReadContract({
+  const { data: integralData, isSuccess: integralIsucecess } = useReadContract({
     abi: myTokenAbi,
     address: TOKEN_ADDRESS,
     functionName: 'getUserPoints',
@@ -54,11 +52,29 @@ export const Integral: React.FC<IntegralProps> = () => {
    */
   useEffect(() => {
     if (lastPointIsSuccess && lastPointData != undefined) {
-      // 这里获取的时间是以秒为单位的，要乘以1000
-      const _isToday: boolean = isToday(Number(lastPointData) * 1000);
-      setIsPoint(_isToday);
+      console.log(lastPointData, 'lastPointData');
+      const lastPointsTime = Number(lastPointData);
+      disSecond(lastPointsTime);
     }
   }, [lastPointIsSuccess]);
+
+  /**
+   * 处理倒计时时间
+   */
+  const disSecond = async (lastPointsSecond: number) => {
+    const remainTime =
+      Math.ceil(new Date().getTime() / 1000) - lastPointsSecond;
+    // 上次签到时间是否超过一天
+    console.log(remainTime > DAY_IN_SECONDS);
+
+    if (remainTime > DAY_IN_SECONDS) {
+      setCanPoints(true);
+    } else {
+      setPontsSecond(DAY_IN_SECONDS - remainTime);
+      await wait(100);
+      setCanPoints(false);
+    }
+  };
 
   /**
    * 签到
@@ -93,9 +109,10 @@ export const Integral: React.FC<IntegralProps> = () => {
   /**
    * 签到成功
    */
-  const pointsSuccess = () => {
-    integralRefetch();
-    setIsPoint(true);
+  const pointsSuccess = async () => {
+    setCanPoints(false);
+    setPontsSecond(DAY_IN_SECONDS);
+    setIntegral(intehral + POINTSADDED);
     const { dismiss } = toast({
       title: '签到成功',
       description: (
@@ -136,9 +153,20 @@ export const Integral: React.FC<IntegralProps> = () => {
   return (
     <div className="flex items-center">
       <Coins /> {intehral}&nbsp;
-      {!isPoint && (
+      {canPoints ? (
         <Button variant="secondary" onClick={handleClickToPoint}>
           签到
+        </Button>
+      ) : (
+        <Button variant="outline" className="cursor-no-drop">
+          {
+            <PointsCountDown
+              second={pointsSecond}
+              onFinish={() => {
+                setCanPoints(true);
+              }}
+            />
+          }
         </Button>
       )}
     </div>

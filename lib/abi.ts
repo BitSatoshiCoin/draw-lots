@@ -1,5 +1,24 @@
 export const myTokenAbi = [
   {
+    constant: true,
+    inputs: [
+      {
+        name: 'user',
+        type: 'address',
+      },
+    ],
+    name: 'getUserPoints',
+    outputs: [
+      {
+        name: '',
+        type: 'uint256',
+      },
+    ],
+    payable: false,
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
     inputs: [
       {
         internalType: 'address',
@@ -32,25 +51,6 @@ export const myTokenAbi = [
     ],
     name: 'addPoints',
     outputs: [],
-    payable: false,
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    constant: true,
-    inputs: [
-      {
-        name: 'user',
-        type: 'address',
-      },
-    ],
-    name: 'getUserPoints',
-    outputs: [
-      {
-        name: '',
-        type: 'uint256',
-      },
-    ],
     payable: false,
     stateMutability: 'nonpayable',
     type: 'function',

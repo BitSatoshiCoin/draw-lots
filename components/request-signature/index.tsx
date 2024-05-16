@@ -18,9 +18,9 @@ import Image from 'next/image';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { AspectRatio } from '@/components/ui/aspect-ratio';
-import { MintResult } from './mint-result';
 import { PointsDeficiencyModal } from './points-deficiency-modal';
 import { ConnectWalletModal } from './connect-wallet-modal';
+import { MintProcessModal } from './mint-process-modal';
 
 interface RequestSignatureProps {}
 export const RequestSignature: React.FC<RequestSignatureProps> = () => {
@@ -32,16 +32,17 @@ export const RequestSignature: React.FC<RequestSignatureProps> = () => {
   const { data: walletClient } = useWalletClient();
   const { address } = useAccount();
   const [animation, setAnimation] = useState(false);
-  const [openMintResult, setOpenMintResult] = useState(false);
+  const [lastTokenId, setLastTokenId] = useState<bigint | undefined>(undefined);
   const [pointsDeficitModal, setPointsDeficitModal] = useState(false);
   const [coonecyWalletModal, setCoonecyWalletModal] = useState(false);
-
   const contract = getContract({
     address: TOKEN_ADDRESS,
     abi: myTokenAbi,
     client: { public: publicClient, wallet: walletClient },
   });
   const handlerClick = async () => {
+    setLastTokenId(BigInt(2));
+    return;
     if (!address) {
       // 提示先连接钱包
       setCoonecyWalletModal(true);
@@ -59,21 +60,14 @@ export const RequestSignature: React.FC<RequestSignatureProps> = () => {
 
     try {
       // 创建NFT
-      const tokenId = await createNFTRequest();
-      console.log(tokenId, 'NFT的tokenID');
-      // 获取所有的tokenid
-      // const tokenids: readonly bigint[] = await queryAllTokendis();
-      // console.log(tokenids, '获取到的所有tokens');
-      // if (!tokenids || tokenids.length == 0) {
-      //   return;
-      // }
-      // const tokenid = tokenids[tokenids.length - 1];
-      // const tokenURI = await getNFTByTokenid(tokenId);
-      // console.log(tokenURI, '获取的tokenURI');
+      await createNFTRequest();
+
+      // 获取最后一个tokenId
+      const tokenId = await getLastTokenid();
+      setLastTokenId(tokenId);
       finishAnimation();
     } catch (error) {
       console.log(error, 'errorerror');
-
       finishAnimation();
       return;
     }
@@ -117,7 +111,20 @@ export const RequestSignature: React.FC<RequestSignatureProps> = () => {
     const res = await (contract as any).write.safeMint([
       address as `0x${string}`,
     ]);
+    console.log(res, '铸造函数返回值');
     return res;
+  };
+
+  /**
+   * 获取当前用户最后一个tokenid
+   */
+  const getLastTokenid = async (): Promise<bigint> => {
+    const tokenids: readonly bigint[] = await queryAllTokendis();
+    console.log(tokenids, '获取到的所有tokens');
+    if (!tokenids || tokenids.length == 0) {
+      throw new Error('not had tokenId');
+    }
+    return tokenids[tokenids.length - 1];
   };
 
   /**
@@ -128,29 +135,12 @@ export const RequestSignature: React.FC<RequestSignatureProps> = () => {
     const data = await contract.read.tokensOfOwner([address as `0x${string}`]);
     return data ? data : [];
   };
-
-  /**
-   * 根据tokenid获取nft信息
-   * @param tokenid
-   * @returns
-   */
-  const getNFTByTokenid = async (
-    tokenid: bigint
-  ): Promise<string | undefined> => {
-    const NFTURI = contract.read.tokenURI([tokenid]);
-    return NFTURI;
-  };
   return (
     <>
       <Card className="w-full">
         <CardContent className="flex justify-center p-0">
-          <AspectRatio ratio={9 / 18} className="relative bg-muted bg-white">
-            <Image
-              src="/images/bg_1080_1920.jpg"
-              alt="bg"
-              fill
-              className="rounded-md"
-            />
+          <AspectRatio ratio={9 / 18} className="relative bg-muted">
+            <Image src="/images/bg_1080_1920.jpg" alt="bg" fill />
             {/* 签筒图片 */}
             <div className="absolute bottom-44 left-1/2 -translate-x-1/2">
               <Image
@@ -171,7 +161,6 @@ export const RequestSignature: React.FC<RequestSignatureProps> = () => {
           </AspectRatio>
         </CardContent>
       </Card>
-      {openMintResult && <MintResult />}
       <PointsDeficiencyModal
         isOpen={pointsDeficitModal}
         onOpenChange={() => {
@@ -184,6 +173,8 @@ export const RequestSignature: React.FC<RequestSignatureProps> = () => {
           setCoonecyWalletModal(!coonecyWalletModal);
         }}
       ></ConnectWalletModal>
+
+      <MintProcessModal tokenId={lastTokenId} />
     </>
   );
 };
