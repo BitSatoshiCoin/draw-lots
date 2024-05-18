@@ -1,0 +1,33 @@
+import React from 'react';
+import { Button } from '@/components/ui/button';
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+interface PointsDeficiencyModalProps {
+  isOpen: boolean;
+  onOpenChange: () => void;
+}
+export const PointsDeficiencyModal: React.FC<PointsDeficiencyModalProps> = ({
+  isOpen,
+  onOpenChange,
+}) => {
+  return (
+    <Dialog open={isOpen} onOpenChange={onOpenChange}>
+      <DialogContent className="sm:max-w-[425px]">
+        <DialogHeader>
+          <DialogTitle>温馨提示</DialogTitle>
+        </DialogHeader>
+        积分不足，请签到获取积分！
+        <DialogFooter>
+          <Button type="submit" onClick={onOpenChange}>
+            确认
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+};

@@ -38,3 +38,12 @@ export function isToday(timestamp : number) : boolean {
          someDate.getMonth() === today.getMonth() &&
          someDate.getFullYear() === today.getFullYear();
 }
+
+/**
+ * 等待，毫秒为单位
+ * @param time 
+ * @returns 
+ */
+export async function wait(time: number) {
+  return new Promise((res => setTimeout(res, time)))
+}

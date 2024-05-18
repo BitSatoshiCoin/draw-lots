@@ -73,7 +73,7 @@ export function ConnectButton() {
                     )}
                     {account.displayName}
                     <LogOut
-                      className="stroke-white"
+                      className="cursor-pointer ml-2"
                       onClick={() => {
                         disconnect();
                       }}

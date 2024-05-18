@@ -1,36 +1,77 @@
-import React from 'react';
-import Image from 'next/image';
+'use client';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
-import { AspectRatio } from '@/components/ui/aspect-ratio';
+import { useChainId, usePublicClient } from 'wagmi';
+import { config } from '@/config/wallet-config';
+import { getContract } from 'viem';
+import { myTokenAbi } from '@/lib/abi';
+import { TOKEN_ADDRESS } from '@/config/const';
+import { NFTImage } from '@/components/nft-image';
+export interface Attribute {
+  trait_type: string;
+  value: string;
+}
+export interface NFTInfo {
+  attributes: Attribute[];
+  description: string;
+  image: string;
+  name: string;
+}
+interface NFTCardProps {
+  tokenId: bigint;
+}
+export const NFTCard: React.FC<NFTCardProps> = ({ tokenId }) => {
+  const [nftInfo, setNftInfo] = useState<NFTInfo | null>(null);
+  const chainId = useChainId();
+  const publicClient = usePublicClient({
+    config,
+    chainId: chainId as any,
+  });
+  const contract = getContract({
+    address: TOKEN_ADDRESS,
+    abi: myTokenAbi,
+    client: {
+      public: publicClient,
+    },
+  });
+  useEffect(() => {
+    if (tokenId !== undefined) {
+      initData();
+    }
+  }, [tokenId]);
 
-interface NFTCardProps {}
-export const NFTCard: React.FC<NFTCardProps> = () => {
+  const initData = async () => {
+    const URI = await readNFTInfo(tokenId);
+    const NFTData = await fetchURI(URI);
+    console.log(NFTData, 'NFTData');
+    setNftInfo(NFTData);
+  };
+
+  const readNFTInfo = async (id: bigint): Promise<string> => {
+    const URI = await contract.read.tokenURI([id]);
+    return URI;
+  };
+
+  const fetchURI = async (URI: string): Promise<any> => {
+    const data = await fetch(URI);
+
+    return data.json();
+  };
+
   return (
-    <Card>
-      <CardContent>
-        <AspectRatio ratio={9 / 16} className="bg-muted bg-white">
-          <Image
-            src="/images/img_qian.png"
-            alt="测试"
-            fill
-            style={{
-              transition: 'transform 0.5s ease-in-out',
-            }}
-            className="hover:-translate-y-4"
-          />
-        </AspectRatio>
+    <Card className="relative">
+      <CardContent className="p-0">
+        <NFTImage
+          image={nftInfo?.image}
+          name={nftInfo?.name}
+          style={{
+            transition: 'transform 0.5s ease-in-out',
+          }}
+          className="hover:-translate-y-4"
+        />
       </CardContent>
-      <CardFooter className="flex">
-        <div className="flex-1">
-          <div className="flex items-end ">
-            <div className="text-rose-600 font-bold align-baseline">
-              <span className="text-sm">￥</span>
-              <span className="text-xl">100</span>
-            </div>
-            <div className="text-sm line-through text-neutral-400">￥100</div>
-          </div>
-          <div className="text-sm  text-neutral-400">剩余货量: 100</div>
-        </div>
+      <CardFooter className="p-0 mt-2 text-center flex">
+        {nftInfo?.name}
       </CardFooter>
     </Card>
   );

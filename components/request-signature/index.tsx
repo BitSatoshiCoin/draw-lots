@@ -1,109 +1,161 @@
 'use client';
-import React, { useRef, useState } from 'react';
-import { useReadContract, useWriteContract, useAccount } from 'wagmi';
-import { myTokenAbi } from '@/lib/abi';
-import clsx from 'clsx';
-import './style.css';
-import { TOKEN_ADDRESS } from '@/config/const';
-import { Card, CardContent, CardFooter } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Loader2 } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
 
-import { MintResult } from './mint-result';
+import './style.css';
+import { cn } from '@/lib/utils';
+import { TOKEN_ADDRESS } from '@/config/const';
+import { getContract, Client } from 'viem';
+import { myTokenAbi } from '@/lib/abi';
+import {
+  useAccount,
+  useWalletClient,
+  useChainId,
+  useClient,
+  useConfig,
+  useWatchContractEvent,
+} from 'wagmi';
+
 import Image from 'next/image';
+import { Card, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 import { AspectRatio } from '@/components/ui/aspect-ratio';
-const myTokenAddress = '0x6b41ab968a53520741ea6f55c83d66caa1352f4b';
+import { PointsDeficiencyModal } from './points-deficiency-modal';
+import { ConnectWalletModal } from './connect-wallet-modal';
+import { MintProcessModal } from './mint-process-modal';
 
 interface RequestSignatureProps {}
 export const RequestSignature: React.FC<RequestSignatureProps> = () => {
-  const account = useAccount();
+  const chainId = useChainId();
+  const client = useClient({
+    chainId: chainId as any,
+  });
+  const { data: walletClient } = useWalletClient();
+  const { address } = useAccount();
   const [animation, setAnimation] = useState(false);
-  const [openMintResult, setOpenMintResult] = useState(false);
-  const { writeContract, status } = useWriteContract();
-  const result = useReadContract({
+  const [transactionHash, setTransactionHash] = useState<
+    `0x${string}` | undefined
+  >(undefined);
+  const [mintProcessModal, setMintProcessModal] = useState(false);
+  const [pointsDeficitModal, setPointsDeficitModal] = useState(false);
+  const [coonectWalletModal, setCoonectWalletModal] = useState(false);
+  const contract = getContract({
+    address: TOKEN_ADDRESS,
     abi: myTokenAbi,
-    address: myTokenAddress,
-    functionName: 'balanceOf',
-    args: ['0x81E46565B14bC51B1084F9021518Ee2D32837BBa' as `0x${string}`],
+    client: { public: client as Client, wallet: walletClient },
   });
 
+  /**
+   * 抽签函数
+   * @returns
+   */
   const handlerClick = async () => {
-    // await startAnimation();
-    // setOpenMintResult(true);
-    createNFTRequest();
+    // setLastTokenId(lastTokenId ? BigInt(Number(lastTokenId) + 1) : BigInt(1));
+    // setMintProcessModal(true);
+    // return;
+    /**
+     * 1. 检查是否连接钱包
+     * 2、检查积分是否足够
+     * 3、开始动画
+     * 4、创建NFT后打开创建进度弹窗
+     */
+    if (!address) return setCoonectWalletModal(true);
+    if (!(await checkEnoughPoints())) return setPointsDeficitModal(true);
+    startAnimation();
+    try {
+      const hash = await createNFTRequest();
+      setTransactionHash(hash);
+      setMintProcessModal(true);
+      finishAnimation();
+    } catch (error) {
+      console.log(error, 'errorerror');
+      finishAnimation();
+    }
   };
 
-  // 开始抽签动画
+  /**
+   * 开始抽签动画
+   * @returns
+   */
   const startAnimation = () => {
-    return new Promise((resolve, reject) => {
-      if (animation) {
-        reject(false);
-      }
-      setAnimation(true);
-      setTimeout(() => {
-        setAnimation(false);
-        resolve(true);
-      }, 3000);
-    });
+    if (animation) {
+      return;
+    }
+    setAnimation(true);
   };
 
-  // 发送生成NFT请求功能
-  const createNFTRequest = () => {
-    const { address } = account;
-    if (!address) return;
-    writeContract(
-      {
-        abi: myTokenAbi,
-        address: myTokenAddress,
-        functionName: 'safeMint',
-        args: [],
-      },
-      {
-        onSuccess(data) {
-          console.log(data, 'data-suceess');
-        },
-        onError(error) {
-          console.log(error, 'error');
-        },
-        onSettled(data) {
-          console.log(data, 'data');
-        },
-      }
-    );
+  /**
+   * 结束抽签动画
+   */
+  const finishAnimation = () => {
+    setAnimation(false);
   };
 
-  const query = () => {
-    console.log(result);
+  /**
+   * 检查积分是否足够
+   * @returns
+   */
+  const checkEnoughPoints = async (): Promise<boolean> => {
+    const res = await contract.read.hasEnoughPointsToMint([
+      address as `0x${string}`,
+    ]);
+    return res;
+  };
+
+  /**
+   * 铸造NFT
+   * @returns
+   */
+
+  const createNFTRequest = async (): Promise<`0x${string}`> => {
+    return await (contract as any).write.safeMint([address as `0x${string}`]);
   };
   return (
     <>
       <Card className="w-full">
         <CardContent className="flex justify-center p-0">
-          <AspectRatio ratio={9 / 18} className="bg-muted bg-white">
-            <Image
-              src="/images/bg_1080_1920.jpg"
-              alt="bg"
-              fill
-              className="rounded-md"
-            />
+          <AspectRatio ratio={9 / 18} className="relative bg-muted">
+            <Image src="/images/bg_1080_1920.jpg" alt="bg" fill />
+            {/* 签筒图片 */}
+            <div className="absolute bottom-44 left-1/2 -translate-x-1/2">
+              <Image
+                src="/images/qiantong.png"
+                alt="bg"
+                width={40}
+                height={40}
+                className={cn({
+                  'shake-animation': animation,
+                })}
+              />
+            </div>
+            {/* 立即抽签按钮 */}
+            <Button
+              className="bg-transparent hover:bg-transparent absolute bottom-28 left-1/2 -translate-x-1/2 w-52"
+              onClick={handlerClick}
+            ></Button>
           </AspectRatio>
         </CardContent>
-        {/* <CardFooter>
-          {status == 'pending' ? (
-            <Button disabled>
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              Please wait
-            </Button>
-          ) : (
-            <Button className="w-full" onClick={handlerClick}>
-              求灵签
-            </Button>
-          )}
-
-          <Button onClick={query}>查询</Button>
-        </CardFooter> */}
       </Card>
-      {openMintResult && <MintResult />}
+      <PointsDeficiencyModal
+        isOpen={pointsDeficitModal}
+        onOpenChange={() => {
+          setPointsDeficitModal(!pointsDeficitModal);
+        }}
+      />
+      <ConnectWalletModal
+        isOpen={coonectWalletModal}
+        onOpenChange={() => {
+          setCoonectWalletModal(!coonectWalletModal);
+        }}
+      ></ConnectWalletModal>
+
+      {mintProcessModal && (
+        <MintProcessModal
+          transactionHash={transactionHash}
+          onClose={() => {
+            setMintProcessModal(false);
+          }}
+        />
+      )}
     </>
   );
 };
