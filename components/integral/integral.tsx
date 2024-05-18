@@ -24,7 +24,7 @@ export const Integral: React.FC<IntegralProps> = () => {
   const { data: integralData, isSuccess: integralIsucecess } = useReadContract({
     abi: myTokenAbi,
     address: TOKEN_ADDRESS,
-    functionName: 'getUserPoints',
+    functionName: 'getUserPoints' as any,
     args: [address as `0x${string}`],
   });
 
