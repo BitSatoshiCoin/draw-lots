@@ -41,7 +41,7 @@ export default function RootLayout({
         <WagmiProvider locale={locale}>
           <ThemeProvider
             attribute="class"
-            defaultTheme="light"
+            defaultTheme="dark"
             enableSystem
             disableTransitionOnChange
           >
