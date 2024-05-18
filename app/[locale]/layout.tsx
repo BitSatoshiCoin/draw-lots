@@ -17,9 +17,9 @@ export const metadata: Metadata = {
 };
 
 // 构建时静态生成路由
-export async function generateStaticParams() {
-  return locales.map((locale) => ({ locale }));
-}
+// export async function generateStaticParams() {
+//   return locales.map((locale) => ({ locale }));
+// }
 
 export default function RootLayout({
   children,
