@@ -4,14 +4,15 @@ import React, { useEffect, useState } from 'react';
 import './style.css';
 import { cn } from '@/lib/utils';
 import { TOKEN_ADDRESS } from '@/config/const';
-import { getContract } from 'viem';
+import { getContract, Client } from 'viem';
 import { myTokenAbi } from '@/lib/abi';
-import { config } from '@/config/wallet-config';
 import {
   useAccount,
-  usePublicClient,
   useWalletClient,
   useChainId,
+  useClient,
+  useConfig,
+  useWatchContractEvent,
 } from 'wagmi';
 
 import Image from 'next/image';
@@ -25,51 +26,49 @@ import { MintProcessModal } from './mint-process-modal';
 interface RequestSignatureProps {}
 export const RequestSignature: React.FC<RequestSignatureProps> = () => {
   const chainId = useChainId();
-  const publicClient = usePublicClient({
-    config,
+  const client = useClient({
     chainId: chainId as any,
   });
   const { data: walletClient } = useWalletClient();
   const { address } = useAccount();
   const [animation, setAnimation] = useState(false);
-  const [lastTokenId, setLastTokenId] = useState<bigint | undefined>(undefined);
+  const [transactionHash, setTransactionHash] = useState<
+    `0x${string}` | undefined
+  >(undefined);
+  const [mintProcessModal, setMintProcessModal] = useState(false);
   const [pointsDeficitModal, setPointsDeficitModal] = useState(false);
-  const [coonecyWalletModal, setCoonecyWalletModal] = useState(false);
+  const [coonectWalletModal, setCoonectWalletModal] = useState(false);
   const contract = getContract({
     address: TOKEN_ADDRESS,
     abi: myTokenAbi,
-    client: { public: publicClient, wallet: walletClient },
+    client: { public: client as Client, wallet: walletClient },
   });
+
+  /**
+   * 抽签函数
+   * @returns
+   */
   const handlerClick = async () => {
-    setLastTokenId(BigInt(2));
-    return;
-    if (!address) {
-      // 提示先连接钱包
-      setCoonecyWalletModal(true);
-      return;
-    }
-
-    // 调用判断积分是否足够函数
-    const isEnough = await checkEnoughPoints();
-    if (!isEnough) {
-      // 提示积分不足
-      setPointsDeficitModal(true);
-      return false;
-    }
+    // setLastTokenId(lastTokenId ? BigInt(Number(lastTokenId) + 1) : BigInt(1));
+    // setMintProcessModal(true);
+    // return;
+    /**
+     * 1. 检查是否连接钱包
+     * 2、检查积分是否足够
+     * 3、开始动画
+     * 4、创建NFT后打开创建进度弹窗
+     */
+    if (!address) return setCoonectWalletModal(true);
+    if (!(await checkEnoughPoints())) return setPointsDeficitModal(true);
     startAnimation();
-
     try {
-      // 创建NFT
-      await createNFTRequest();
-
-      // 获取最后一个tokenId
-      const tokenId = await getLastTokenid();
-      setLastTokenId(tokenId);
+      const hash = await createNFTRequest();
+      setTransactionHash(hash);
+      setMintProcessModal(true);
       finishAnimation();
     } catch (error) {
       console.log(error, 'errorerror');
       finishAnimation();
-      return;
     }
   };
 
@@ -107,33 +106,8 @@ export const RequestSignature: React.FC<RequestSignatureProps> = () => {
    * @returns
    */
 
-  const createNFTRequest = async () => {
-    const res = await (contract as any).write.safeMint([
-      address as `0x${string}`,
-    ]);
-    console.log(res, '铸造函数返回值');
-    return res;
-  };
-
-  /**
-   * 获取当前用户最后一个tokenid
-   */
-  const getLastTokenid = async (): Promise<bigint> => {
-    const tokenids: readonly bigint[] = await queryAllTokendis();
-    console.log(tokenids, '获取到的所有tokens');
-    if (!tokenids || tokenids.length == 0) {
-      throw new Error('not had tokenId');
-    }
-    return tokenids[tokenids.length - 1];
-  };
-
-  /**
-   * 获取当前用户所有的tokenids
-   * @returns tokenids
-   */
-  const queryAllTokendis = async (): Promise<readonly bigint[]> => {
-    const data = await contract.read.tokensOfOwner([address as `0x${string}`]);
-    return data ? data : [];
+  const createNFTRequest = async (): Promise<`0x${string}`> => {
+    return await (contract as any).write.safeMint([address as `0x${string}`]);
   };
   return (
     <>
@@ -168,13 +142,20 @@ export const RequestSignature: React.FC<RequestSignatureProps> = () => {
         }}
       />
       <ConnectWalletModal
-        isOpen={coonecyWalletModal}
+        isOpen={coonectWalletModal}
         onOpenChange={() => {
-          setCoonecyWalletModal(!coonecyWalletModal);
+          setCoonectWalletModal(!coonectWalletModal);
         }}
       ></ConnectWalletModal>
 
-      <MintProcessModal tokenId={lastTokenId} />
+      {mintProcessModal && (
+        <MintProcessModal
+          transactionHash={transactionHash}
+          onClose={() => {
+            setMintProcessModal(false);
+          }}
+        />
+      )}
     </>
   );
 };

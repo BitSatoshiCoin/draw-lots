@@ -132,4 +132,31 @@ export const myTokenAbi = [
     type: 'function',
     overrides: ['ERC721', 'ERC721URIStorage'],
   },
+  {
+    type: 'event',
+    name: 'MetadataUpdate',
+    inputs: [{ indexed: false, name: '_tokenId', type: 'uint256' }],
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        name: 'from',
+        type: 'address',
+      },
+      {
+        indexed: true,
+        name: 'to',
+        type: 'address',
+      },
+      {
+        indexed: true,
+        name: 'tokenId',
+        type: 'uint256',
+      },
+    ],
+    name: 'Transfer',
+    type: 'event',
+  },
 ] as const;

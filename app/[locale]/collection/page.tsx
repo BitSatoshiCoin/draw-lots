@@ -40,7 +40,6 @@ export default function Page() {
     // 获取所有的tokenid
     const tokenIds = await queryAllTokendIds();
     console.log(tokenIds, 'tokenIds');
-
     setTokendIds(tokenIds);
   };
 

@@ -8,6 +8,7 @@ import { SiteHeader } from '@/components/site-header';
 import { cn } from '@/lib/utils';
 import { locales } from '@/config/locale-config';
 import { Toaster } from '@/components/ui/toaster';
+
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
