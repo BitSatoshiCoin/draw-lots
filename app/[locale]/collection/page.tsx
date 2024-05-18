@@ -1,13 +1,12 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { NFTCard } from '@/components/collection/NFT-card';
-import { Button } from '@/components/ui/button';
 import { useAccount, useChainId, usePublicClient } from 'wagmi';
 import { config } from '@/config/wallet-config';
 import { getContract } from 'viem';
 import { myTokenAbi } from '@/lib/abi';
-import { TOKEN_ADDRESS } from '@/config/const';
 
+const TOKEN_ADDRESS = process.env.NEXT_PUBLIC_TOKEN_ADDRESS as `0x${string}`;
 export default function Page() {
   const [tokenIds, setTokendIds] = useState<readonly bigint[]>([]);
   const { address } = useAccount();
@@ -39,7 +38,6 @@ export default function Page() {
   const initData = async () => {
     // 获取所有的tokenid
     const tokenIds = await queryAllTokendIds();
-    console.log(tokenIds, 'tokenIds');
     setTokendIds(tokenIds);
   };
 

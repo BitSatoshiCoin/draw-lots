@@ -11,7 +11,7 @@ const nextConfig = {
       port: '',
       pathname: '/ipfs/**',
     }]
-  },
+  }
 };
 
 export default withNextIntl(nextConfig);
