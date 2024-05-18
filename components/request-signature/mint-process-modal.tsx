@@ -1,15 +1,14 @@
 'use client';
-import React, { useState, useEffect, useRef } from 'react';
-import { createPortal } from 'react-dom';
+import React, { useState } from 'react';
 import { useWatchContractEvent, usePublicClient, useChainId } from 'wagmi';
 import { getContract } from 'viem';
 import { config } from '@/config/wallet-config';
-import { TOKEN_ADDRESS } from '@/config/const';
 import { myTokenAbi } from '@/lib/abi';
-
 import { Loading } from '@/components/loading-icon';
 import { NFTImage } from '@/components/nft-image';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
+
+const TOKEN_ADDRESS = process.env.NEXT_PUBLIC_TOKEN_ADDRESS as `0x${string}`;
 export interface NFTInfo {
   image: string;
   name: string;

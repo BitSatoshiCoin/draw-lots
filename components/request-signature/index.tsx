@@ -1,19 +1,10 @@
 'use client';
-import React, { useEffect, useState } from 'react';
-
+import React, { useState } from 'react';
 import './style.css';
 import { cn } from '@/lib/utils';
-import { TOKEN_ADDRESS } from '@/config/const';
 import { getContract, Client } from 'viem';
 import { myTokenAbi } from '@/lib/abi';
-import {
-  useAccount,
-  useWalletClient,
-  useChainId,
-  useClient,
-  useConfig,
-  useWatchContractEvent,
-} from 'wagmi';
+import { useAccount, useWalletClient, useChainId, useClient } from 'wagmi';
 
 import Image from 'next/image';
 import { Card, CardContent } from '@/components/ui/card';
@@ -23,6 +14,7 @@ import { PointsDeficiencyModal } from './points-deficiency-modal';
 import { ConnectWalletModal } from './connect-wallet-modal';
 import { MintProcessModal } from './mint-process-modal';
 
+const TOKEN_ADDRESS = process.env.NEXT_PUBLIC_TOKEN_ADDRESS as `0x${string}`;
 interface RequestSignatureProps {}
 export const RequestSignature: React.FC<RequestSignatureProps> = () => {
   const chainId = useChainId();

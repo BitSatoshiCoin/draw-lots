@@ -5,8 +5,9 @@ import { useChainId, usePublicClient } from 'wagmi';
 import { config } from '@/config/wallet-config';
 import { getContract } from 'viem';
 import { myTokenAbi } from '@/lib/abi';
-import { TOKEN_ADDRESS } from '@/config/const';
 import { NFTImage } from '@/components/nft-image';
+
+const TOKEN_ADDRESS = process.env.NEXT_PUBLIC_TOKEN_ADDRESS as `0x${string}`;
 export interface Attribute {
   trait_type: string;
   value: string;

@@ -5,10 +5,11 @@ import { useToast } from '@/components/ui/use-toast';
 import { Coins, Info } from 'lucide-react';
 import { useWriteContract, useAccount, useReadContract } from 'wagmi';
 import { myTokenAbi } from '@/lib/abi';
-import { TOKEN_ADDRESS, POINTSADDED, DAY_IN_SECONDS } from '@/config/const';
+import { POINTSADDED, DAY_IN_SECONDS } from '@/config/const';
 import { PointsCountDown } from './points-countdown';
 import { wait } from '@/lib/utils';
 
+const TOKEN_ADDRESS = process.env.NEXT_PUBLIC_TOKEN_ADDRESS as `0x${string}`;
 interface IntegralProps {}
 export const Integral: React.FC<IntegralProps> = () => {
   const [canPoints, setCanPoints] = useState(false); // 是否可以签到
@@ -144,7 +145,7 @@ export const Integral: React.FC<IntegralProps> = () => {
   if (status !== 'connected') {
     return (
       <div className="text-slate-500 text-sm flex items-center">
-        连接钱包后才能签到哦
+        请连接钱包
         <Info />
       </div>
     );
