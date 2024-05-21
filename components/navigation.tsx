@@ -5,12 +5,12 @@ import { useTranslations } from 'next-intl';
 import { usePathname, useRouter } from 'next/navigation';
 
 const navigation = [
-  { name: '求灵签', href: '/' },
-  { name: '我的签文', href: '/collection' },
+  { name: 'drawDivinationLot', href: '/' },
+  { name: 'myDivinationLot', href: '/collection' },
 ];
 
 export function Navigation({ locale }: { locale: string }) {
-  const t = useTranslations('Nav');
+  const t = useTranslations('Basic');
   const pathName = usePathname();
   const router = useRouter();
 
@@ -32,7 +32,7 @@ export function Navigation({ locale }: { locale: string }) {
         router.push(item.href);
       }}
     >
-      {item.name}
+      {t(item.name)}
     </Button>
   ));
 }

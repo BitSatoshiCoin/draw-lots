@@ -1,6 +1,6 @@
 'use client';
 import React from 'react';
-
+import { useTranslations } from 'next-intl';
 import { injected } from 'wagmi/connectors';
 import { Button } from '@/components/ui/button';
 import {
@@ -19,6 +19,7 @@ export const ConnectWalletModal: React.FC<ConnectWalletModalProps> = ({
   isOpen,
   onOpenChange,
 }) => {
+  const t = useTranslations('Basic');
   const { connect } = useConnect();
 
   const handleClick = () => {
@@ -29,15 +30,15 @@ export const ConnectWalletModal: React.FC<ConnectWalletModalProps> = ({
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>温馨提示</DialogTitle>
+          <DialogTitle>{t('friendlyReminder')}</DialogTitle>
         </DialogHeader>
-        请先连接钱包！
+        {t('pleaseConnectWalletFirst')}
         <DialogFooter>
           <Button variant="outline" onClick={onOpenChange}>
-            取消
+            {t('cancel')}
           </Button>
           <Button type="submit" onClick={handleClick}>
-            确认
+            {t('confirm')}
           </Button>
         </DialogFooter>
       </DialogContent>

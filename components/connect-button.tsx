@@ -1,12 +1,13 @@
 'use client';
 import { useAccount, useDisconnect } from 'wagmi';
+import { useTranslations } from 'next-intl';
 import Image from 'next/image';
 import { ConnectButton as NextConnectButton } from '@rainbow-me/rainbowkit';
 import { Button } from '@/components/ui/button';
-import { Toggle } from '@/components/ui/toggle';
 import { LogOut } from 'lucide-react';
 
 export function ConnectButton() {
+  const t = useTranslations('Basic');
   const { disconnect } = useDisconnect();
   const curAccount = useAccount();
 
@@ -46,7 +47,7 @@ export function ConnectButton() {
                 if (!connected) {
                   return (
                     <Button onClick={openConnectModal} type="button">
-                      Connect a Wallet
+                      {t('connectAWallet')}
                     </Button>
                   );
                 }

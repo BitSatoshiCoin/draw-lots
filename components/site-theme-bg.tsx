@@ -15,15 +15,22 @@ export function SiteThemeBg() {
     return null;
   }
   return (
+    // <div
+    //   style={{
+    //     backgroundImage:
+    //       theme == 'light'
+    //         ? `url(/images/light-top-bg.jpg)`
+    //         : `url(/bg-dark.svg)`,
+    //     backgroundPosition: 'left top',
+    //     backgroundRepeat: 'no-repeat',
+    //     backgroundSize: '100% 100%',
+    //   }}
+    //   className="w-full h-full absolute top-0	left-0 -z-50"
+    // ></div>
+
     <div
       style={{
-        backgroundImage:
-          theme == 'light'
-            ? `url(/images/light-top-bg.jpg)`
-            : `url(/bg-dark.svg)`,
-        backgroundPosition: 'left top',
-        backgroundRepeat: 'no-repeat',
-        backgroundSize: '100% 100%',
+        backgroundColor: 'rgba(252, 223, 175, .6)',
       }}
       className="w-full h-full absolute top-0	left-0 -z-50"
     ></div>

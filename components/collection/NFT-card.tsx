@@ -44,7 +44,6 @@ export const NFTCard: React.FC<NFTCardProps> = ({ tokenId }) => {
   const initData = async () => {
     const URI = await readNFTInfo(tokenId);
     const NFTData = await fetchURI(URI);
-    console.log(NFTData, 'NFTData');
     setNftInfo(NFTData);
   };
 

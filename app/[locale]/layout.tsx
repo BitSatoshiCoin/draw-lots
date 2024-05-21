@@ -8,7 +8,7 @@ import { SiteHeader } from '@/components/site-header';
 import { cn } from '@/lib/utils';
 import { locales } from '@/config/locale-config';
 import { Toaster } from '@/components/ui/toaster';
-
+import { SiteThemeBg } from '@/components/site-theme-bg';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
@@ -41,10 +41,11 @@ export default function RootLayout({
         <WagmiProvider locale={locale}>
           <ThemeProvider
             attribute="class"
-            defaultTheme="dark"
+            defaultTheme="light"
             enableSystem
             disableTransitionOnChange
           >
+            <SiteThemeBg />
             <div className="mx-auto min-h-full flex flex-col">
               <SiteHeader locale={locale} />
               <main className="pt-6 grow">{children}</main>

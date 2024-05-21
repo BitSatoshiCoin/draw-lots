@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -15,16 +16,17 @@ export const PointsDeficiencyModal: React.FC<PointsDeficiencyModalProps> = ({
   isOpen,
   onOpenChange,
 }) => {
+  const t = useTranslations('Basic');
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>温馨提示</DialogTitle>
+          <DialogTitle>{t('friendlyReminder')}</DialogTitle>
         </DialogHeader>
-        积分不足，请签到获取积分！
+        {t('insufficientPoints')}
         <DialogFooter>
           <Button type="submit" onClick={onOpenChange}>
-            确认
+            {t('confirm')}
           </Button>
         </DialogFooter>
       </DialogContent>

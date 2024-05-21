@@ -1,13 +1,16 @@
 {
   "Basic": {
-    "text": "测试文字 🥺"
-  },
-  "Nav": {
-    "Exchange": "兑换",
-    "About us": "关于我们"
-  },
-  "About": {
-    "mainTitle": "优化比特币交易体验",
-    "subtitle": " 通过质押比特币，换取与以太币价值锚定的代币，实现高效流通，享受更低交易费用的加密世界。"
+    "drawDivinationLot": "求灵签",
+    "myDivinationLot": "我的签文",
+    "pleaseConnectWallet": "请连接钱包",
+    "checkIn": "签到",
+    "checkInSuccessful": "签到成功",
+    "checkInFailed": "签到失败",
+    "friendlyReminder": "温馨提示",
+    "pleaseConnectWalletFirst": "请先连接钱包！",
+    "cancel": "取消",
+    "confirm": "确认",
+    "insufficientPoints": "积分不足，请签到获取积分！",
+    "connectAWallet": "连接钱包"
   }
 }

@@ -8,10 +8,12 @@ import { myTokenAbi } from '@/lib/abi';
 import { POINTSADDED, DAY_IN_SECONDS } from '@/config/const';
 import { PointsCountDown } from './points-countdown';
 import { wait } from '@/lib/utils';
+import { useTranslations } from 'next-intl';
 
 const TOKEN_ADDRESS = process.env.NEXT_PUBLIC_TOKEN_ADDRESS as `0x${string}`;
 interface IntegralProps {}
 export const Integral: React.FC<IntegralProps> = () => {
+  const t = useTranslations('Basic');
   const [canPoints, setCanPoints] = useState(false); // 是否可以签到
   const [pointsSecond, setPontsSecond] = useState(0);
   const [intehral, setIntegral] = useState(0);
@@ -65,8 +67,6 @@ export const Integral: React.FC<IntegralProps> = () => {
   const disSecond = async (lastPointsSecond: number) => {
     const remainTime =
       Math.ceil(new Date().getTime() / 1000) - lastPointsSecond;
-    // 上次签到时间是否超过一天
-    console.log(remainTime > DAY_IN_SECONDS);
 
     if (remainTime > DAY_IN_SECONDS) {
       setCanPoints(true);
@@ -115,7 +115,7 @@ export const Integral: React.FC<IntegralProps> = () => {
     setPontsSecond(DAY_IN_SECONDS);
     setIntegral(intehral + POINTSADDED);
     const { dismiss } = toast({
-      title: '签到成功',
+      title: t('checkInSuccessful'),
       description: (
         <div className="flex items-center">
           <Coins /> + {POINTSADDED}
@@ -132,7 +132,7 @@ export const Integral: React.FC<IntegralProps> = () => {
       description: (
         <>
           <div className="flex items-center">
-            <Info /> &nbsp;签到失败
+            <Info /> &nbsp;{t('checkInFailed')}
           </div>
         </>
       ),
@@ -144,10 +144,11 @@ export const Integral: React.FC<IntegralProps> = () => {
 
   if (status !== 'connected') {
     return (
-      <div className="text-slate-500 text-sm flex items-center">
-        请连接钱包
-        <Info />
-      </div>
+      // <div className="text-slate-500 text-sm flex items-center">
+      //   {t('pleaseConnectWallet')}
+      //   <Info />
+      // </div>
+      <></>
     );
   }
 
@@ -156,7 +157,7 @@ export const Integral: React.FC<IntegralProps> = () => {
       <Coins /> {intehral}&nbsp;
       {canPoints ? (
         <Button variant="secondary" onClick={handleClickToPoint}>
-          签到
+          {t('checkIn')}
         </Button>
       ) : (
         <Button variant="outline" className="cursor-no-drop">
