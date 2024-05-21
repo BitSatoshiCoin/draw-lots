@@ -5,6 +5,7 @@ import { cn } from '@/lib/utils';
 import { getContract, Client } from 'viem';
 import { myTokenAbi } from '@/lib/abi';
 import { useAccount, useWalletClient, useChainId, useClient } from 'wagmi';
+import { useTranslations } from 'next-intl';
 
 import Image from 'next/image';
 import { Card, CardContent } from '@/components/ui/card';
@@ -17,6 +18,7 @@ import { MintProcessModal } from './mint-process-modal';
 const TOKEN_ADDRESS = process.env.NEXT_PUBLIC_TOKEN_ADDRESS as `0x${string}`;
 interface RequestSignatureProps {}
 export const RequestSignature: React.FC<RequestSignatureProps> = () => {
+  const t = useTranslations('Basic');
   const chainId = useChainId();
   const client = useClient({
     chainId: chainId as any,
@@ -105,8 +107,13 @@ export const RequestSignature: React.FC<RequestSignatureProps> = () => {
     <>
       <Card className="w-full">
         <CardContent className="flex justify-center p-0">
-          <AspectRatio ratio={9 / 18} className="relative bg-muted">
-            <Image src="/images/bg_1080_1920.jpg" alt="bg" fill />
+          <AspectRatio ratio={9 / 18} className="relative">
+            <Image
+              src="/images/bg_1080_1920.jpg"
+              alt="bg"
+              fill
+              className="rounded-sm	"
+            />
             {/* 签筒图片 */}
             <div className="absolute bottom-44 left-1/2 -translate-x-1/2">
               <Image

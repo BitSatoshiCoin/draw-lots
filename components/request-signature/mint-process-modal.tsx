@@ -1,5 +1,5 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useWatchContractEvent, usePublicClient, useChainId } from 'wagmi';
 import { getContract } from 'viem';
 import { config } from '@/config/wallet-config';
@@ -7,6 +7,7 @@ import { myTokenAbi } from '@/lib/abi';
 import { Loading } from '@/components/loading-icon';
 import { NFTImage } from '@/components/nft-image';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
+import './style.css';
 
 const TOKEN_ADDRESS = process.env.NEXT_PUBLIC_TOKEN_ADDRESS as `0x${string}`;
 export interface NFTInfo {
@@ -29,6 +30,7 @@ export const MintProcessModal: React.FC<MintProcessModalProps> = ({
     config: config,
     chainId: chainId as any,
   });
+
   const contract = getContract({
     address: TOKEN_ADDRESS,
     abi: myTokenAbi,
@@ -105,8 +107,8 @@ export const MintProcessModal: React.FC<MintProcessModalProps> = ({
           <Loading />
         </DialogContent>
       ) : (
-        <DialogContent>
-          <NFTImage image={image} name={'NFT'} />
+        <DialogContent className="p-10">
+          <NFTImage className="slit-in-vertical" image={image} name={'NFT'} />
         </DialogContent>
       )}
     </Dialog>

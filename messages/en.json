@@ -1,13 +1,16 @@
 {
   "Basic": {
-    "text": "test 🥺"
-  },
-  "Nav": {
-    "Exchange": "Exchange",
-    "About us": "About us"
-  },
-  "About": {
-    "mainTitle": "Optimizing Bitcoin Trading Experience",
-    "subtitle": " By pledging Bitcoin, swap for Ethereum-value-pegged tokens, achieving efficient circulation, and revel in a cryptographic world with lower transaction fees."
-  }
+    "drawDivinationLot": "Draw a divination lot",
+    "myDivinationLot": "My divination lot",
+    "pleaseConnectWallet": "Please connect your wallet",
+    "checkIn": "Check-in",
+    "checkInFailed": "Check-in failed",
+    "checkInSuccessful": "Check-in successful",
+    "friendlyReminder": "Friendly reminder",
+    "pleaseConnectWalletFirst": "Please connect your wallet first!",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "insufficientPoints": "Insufficient points, please check-in to earn points!",
+    "connectAWallet": "Connect a Wallet"
+  }  
 }

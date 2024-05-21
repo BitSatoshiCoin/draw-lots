@@ -1,2 +1,2 @@
-export const locales : string[] = ['zh', 'en']
+export const locales : string[] = ['en', 'zh']
 export const defaultLocale : string = 'en'
