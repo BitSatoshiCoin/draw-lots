@@ -75,6 +75,7 @@ export function ConnectButton() {
                     {account.displayName}
                     <LogOut
                       className="cursor-pointer ml-2"
+                      size={32}
                       onClick={() => {
                         disconnect();
                       }}

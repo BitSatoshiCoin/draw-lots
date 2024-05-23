@@ -31,6 +31,11 @@ export const MintProcessModal: React.FC<MintProcessModalProps> = ({
     chainId: chainId as any,
   });
 
+  // useEffect(() => {
+  //   fetchImageData(
+  //     'https://ipfs.io/ipfs/QmYgVHxHNQsaSFxkVzuVLcA5aMfYJjgmkmubVoZJsCmYE6/83.jpg'
+  //   );
+  // }, []);
   const contract = getContract({
     address: TOKEN_ADDRESS,
     abi: myTokenAbi,
@@ -79,7 +84,7 @@ export const MintProcessModal: React.FC<MintProcessModalProps> = ({
     const URI: string = await getURI(tokenId!);
     const info: NFTInfo = await fetchURI(URI);
     console.log(info, 'info');
-    setImage(info.image);
+    fetchImageData(info.image);
   };
 
   /**
@@ -100,6 +105,16 @@ export const MintProcessModal: React.FC<MintProcessModalProps> = ({
     return data.json();
   };
 
+  /**
+   *
+   */
+  const fetchImageData = async (imageUrl: string) => {
+    const response = await fetch(imageUrl);
+    const blob = await response.blob();
+    const localImgUrl = URL.createObjectURL(blob);
+    setImage(localImgUrl);
+  };
+
   return (
     <Dialog open={true} onOpenChange={onClose}>
       {!image ? (
@@ -107,7 +122,8 @@ export const MintProcessModal: React.FC<MintProcessModalProps> = ({
           <Loading />
         </DialogContent>
       ) : (
-        <DialogContent className="p-10">
+        <DialogContent className="p-10 pb-0 max-w-md">
+
           <NFTImage className="slit-in-vertical" image={image} name={'NFT'} />
         </DialogContent>
       )}

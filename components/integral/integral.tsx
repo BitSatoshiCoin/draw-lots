@@ -154,7 +154,9 @@ export const Integral: React.FC<IntegralProps> = () => {
 
   return (
     <div className="flex items-center">
-      <Coins /> {intehral}&nbsp;
+      <div className="mr-2 flex">
+        <Coins /> {intehral}
+      </div>
       {canPoints ? (
         <Button variant="secondary" onClick={handleClickToPoint}>
           {t('checkIn')}

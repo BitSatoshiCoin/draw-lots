@@ -1,7 +1,13 @@
 import { RequestSignature } from '@/components/request-signature/index';
 import { NextIntlClientProvider, useMessages } from 'next-intl';
 
-export default function Home() {
+export default function Home({
+  params: { locale },
+}: Readonly<{
+  params: { locale: string };
+}>) {
+  console.log(locale);
+
   const messages = useMessages();
   return (
     <div className="mx-auto w-96">
@@ -10,7 +16,7 @@ export default function Home() {
           Basic: messages.Basic,
         }}
       >
-        <RequestSignature />
+        <RequestSignature locale={locale} />
       </NextIntlClientProvider>
     </div>
   );
