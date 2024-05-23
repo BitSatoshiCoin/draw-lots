@@ -16,8 +16,12 @@ import { ConnectWalletModal } from './connect-wallet-modal';
 import { MintProcessModal } from './mint-process-modal';
 
 const TOKEN_ADDRESS = process.env.NEXT_PUBLIC_TOKEN_ADDRESS as `0x${string}`;
-interface RequestSignatureProps {}
-export const RequestSignature: React.FC<RequestSignatureProps> = () => {
+interface RequestSignatureProps {
+  locale: string;
+}
+export const RequestSignature: React.FC<RequestSignatureProps> = ({
+  locale,
+}) => {
   const t = useTranslations('Basic');
   const chainId = useChainId();
   const client = useClient({
@@ -109,10 +113,14 @@ export const RequestSignature: React.FC<RequestSignatureProps> = () => {
         <CardContent className="flex justify-center p-0">
           <AspectRatio ratio={9 / 18} className="relative">
             <Image
-              src="/images/bg_1080_1920.jpg"
+              src={
+                locale == 'en'
+                  ? '/images/home_bg_en.jpg'
+                  : '/images/home_bg_zh.jpg'
+              }
               alt="bg"
               fill
-              className="rounded-sm	"
+              className="rounded-[8px]"
             />
             {/* 签筒图片 */}
             <div className="absolute bottom-44 left-1/2 -translate-x-1/2">

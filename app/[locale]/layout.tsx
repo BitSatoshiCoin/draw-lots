@@ -36,6 +36,7 @@ export default function RootLayout({
           'min-w-full',
           'min-h-screen',
           'relative',
+          'overflow-scroll',
         ])}
       >
         <WagmiProvider locale={locale}>

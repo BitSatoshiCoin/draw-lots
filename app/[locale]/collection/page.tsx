@@ -50,7 +50,7 @@ export default function Page() {
     return data ? data : [];
   };
   return (
-    <div className="m-auto w-4/5 grid gap-x-8 gap-y-8 grid-cols-4">
+    <div className="m-auto w-4/5 grid gap-x-8 gap-y-8 grid-cols-3">
       {tokenIds.map((tokenId, index) => {
         return <NFTCard key={index} tokenId={tokenId} />;
       })}

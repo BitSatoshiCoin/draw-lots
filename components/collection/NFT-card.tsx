@@ -70,7 +70,7 @@ export const NFTCard: React.FC<NFTCardProps> = ({ tokenId }) => {
           className="hover:-translate-y-4"
         />
       </CardContent>
-      <CardFooter className="p-0 mt-2 text-center flex">
+      <CardFooter className="p-0 mt-8  text-center flex justify-center text-lg font-medium">
         {nftInfo?.name}
       </CardFooter>
     </Card>

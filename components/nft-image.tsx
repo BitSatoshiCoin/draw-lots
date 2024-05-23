@@ -9,16 +9,18 @@ interface NFTImageProps {
   name?: string;
   className?: string;
   style?: React.CSSProperties;
+  ratio?: number;
 }
 export const NFTImage: React.FC<NFTImageProps> = ({
   image,
   name,
   className,
   style = {},
+  ratio,
 }) => {
   const classes = cn('', className);
   return (
-    <AspectRatio ratio={9 / 9} className="bg-muted">
+    <AspectRatio ratio={ratio ? ratio : 9 / 18}>
       {!image ? (
         <div className="absoult w-full h-full flex items-center justify-center">
           <Loading />
