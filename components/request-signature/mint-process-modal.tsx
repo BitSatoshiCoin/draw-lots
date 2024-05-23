@@ -36,7 +36,6 @@ export const MintProcessModal: React.FC<MintProcessModalProps> = ({
   //     'https://ipfs.io/ipfs/QmYgVHxHNQsaSFxkVzuVLcA5aMfYJjgmkmubVoZJsCmYE6/83.jpg'
   //   );
   // }, []);
-
   const contract = getContract({
     address: TOKEN_ADDRESS,
     abi: myTokenAbi,
@@ -124,6 +123,7 @@ export const MintProcessModal: React.FC<MintProcessModalProps> = ({
         </DialogContent>
       ) : (
         <DialogContent className="p-10 pb-0 max-w-md">
+
           <NFTImage className="slit-in-vertical" image={image} name={'NFT'} />
         </DialogContent>
       )}
